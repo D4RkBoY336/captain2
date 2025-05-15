@@ -2,13 +2,16 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 import datetime
 import os
+from pathlib import Path
 
-bot = telebot.TeleBot("7879501513:AAFLIOd1d-1SP1zcQTCnM8FnaIP3lUZ7jBs")
-ADMIN_CHAT_ID = "5944513375"  # Get this from @userinfobot
+# Use environment variables for sensitive data
+bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_TOKEN", "7879501513:AAFLIOd1d-1SP1zcQTCnM8FnaIP3lUZ7jBs"))
+ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID", "5944513375")
 
-# Ensure data directory exists
-os.makedirs("/data/data/com.termux/files/home/bot_data", exist_ok=True)
-USER_DATA_FILE = "/data/data/com.termux/files/home/bot_data/user_data.txt"
+# Use a cross-platform data directory
+DATA_DIR = Path(__file__).parent / "bot_data"
+DATA_DIR.mkdir(exist_ok=True)
+USER_DATA_FILE = DATA_DIR / "user_data.txt"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -62,6 +65,6 @@ def handle_contact(message):
     )
 
 if __name__ == '__main__':
-    print("📱 Bot running in Termux...")
+    print("📱 Bot is running...")
     print(f"📂 Data file: {USER_DATA_FILE}")
     bot.polling()
